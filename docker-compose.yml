@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+    app:
+      container_name: http-server.service
+      build:
+        context: http-server
+        dockerfile: ./http-server.DockerFile
+      expose:
+        - "8080:80"
+      environment:
+        - FLASK_ENV=production
+      networks:
+        - app_network
+    elb:
+      image: haproxy:2.8
+      ports:
+         - "8060:80"
+      volumes:
+        - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      networks:
+        - app_network
+
+networks:
+  app_network:
+    external: false
